@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\ordermngmnt",
+    "\\ordermngmnt\\ordermngmnt",
+    "\\ordermngmnt\\ordermngmnt\\__pycache__",
+    "\\ordermngmnt\\orders",
+    "\\ordermngmnt\\orders\\migrations",
+    "\\ordermngmnt\\static",
+    "\\ordermngmnt\\static\\orders",
+    "\\ordermngmnt\\static\\orders\\css",
+    "\\ordermngmnt\\static\\orders\\js"
+  ],
+  "SelectedNode": "\\ordermngmnt\\orders\\views.py",
+  "PreviewInSolutionExplorer": false
+}

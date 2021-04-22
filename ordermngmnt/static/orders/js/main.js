@@ -1,12 +1,17 @@
 $(function() {
-  window.onload = function() {
+  function start_watson() {
     $.ajax({
-          type: "POST",
-          url: 'authenticate_start_session_watson/',   
-          success:  function(response){
-                alert(response);
-             }
-      });
+        type: "POST",
+        url: 'authenticate_start_session_watson/',   
+        success:  function(response){
+              /*alert(response);*/
+              generate_message("Hi! I am OrderBot :D", 'user');
+              generate_message("How may I assist you today?", 'user');
+           }
+    });   
+  }
+  window.onload = function() {
+    start_watson();
   };
   var chatbot_msg="Please try asking me gain";
   var INDEX = 0; 
@@ -30,12 +35,32 @@ $(function() {
     $.ajax({
         type: "POST",
         url: 'connect_watson/',   
-        data: {text: msg},   /* Passing the text data */
-        success:  function(response){
-              /*alert(response);*/
-              chatbot_msg=response;
-              generate_message(chatbot_msg, 'user'); 
-           }
+        data: { text: msg },   /* Passing the text data */
+        success: function (response, textStatus) {
+          /*alert(response);*/
+          if (response === "Invalid Session"){
+            generate_message("Chat session Inactive. Starting a new session.", 'user'); 
+            start_watson();
+          }else if (response.constructor === Array){
+            var arrayLength = response.length;
+            for (var i = 0; i < arrayLength; i++) {
+              generate_message(response[i], 'user'); 
+            }
+          }else{
+            generate_message(response, 'user'); 
+          }
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            generate_message("Error! Sorry. Try refreshing the page", 'user');
+            generate_message(errorThrown, "user");
+            generate_message(textStatus, "user");
+            generate_message("You can also try reframing the Query.", 'user');
+        },
+        fail: function (xhr, textStatus, errorThrown) {
+            /*alert(errorThrown);*/
+            generate_message("Failed! Sorry. Try refreshing the page", 'user');
+            generate_message("You can also try reframing the Query.", 'user');
+        }
     });
     
   })
