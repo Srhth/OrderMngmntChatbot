@@ -5,7 +5,8 @@ $(function() {
         url: 'authenticate_start_session_watson/',   
         success:  function(response){
               /*alert(response);*/
-              generate_message("Hi! I am OrderBot :D", 'user');
+              generate_message("Hi! I am Watson.O", 'user');
+              generate_message(":D","user");
               generate_message("How may I assist you today?", 'user');
            }
     });   

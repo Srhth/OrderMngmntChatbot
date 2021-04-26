@@ -90,32 +90,40 @@ def get_response(request):
 				return JsonResponse(ex.message, safe=False)
 			return JsonResponse("Error "+str(ex.code)+"-"+ex.message, safe=False)
 	else:
-		request.session['promptSuggestion'] = False
-		suggestions = request.session.get('suggestions')
 		try:
-			response = assistant.message(
-				assistant_id= request.session.get("asst_id"),
-				session_id= request.session.get("watson_session_id"),
-				input= suggestions[str(int(input_text)-1)],
-				context={
-					'global': {
-						'system': {
-							'user_id': 'my_user_id'
-						}
-					},
-					'skills': {
-						'main skill': {
-							'user_defined': {
-								'account_number': '123456'
+			option = int(input_text)-1
+			suggestions = request.session.get('suggestions')
+			if 0<=option<len(suggestions):
+				request.session['promptSuggestion'] = False
+				try:
+					response = assistant.message(
+						assistant_id= request.session.get("asst_id"),
+						session_id= request.session.get("watson_session_id"),
+						input= suggestions[str(option)],
+						context={
+							'global': {
+								'system': {
+									'user_id': 'my_user_id'
+								}
+							},
+							'skills': {
+								'main skill': {
+									'user_defined': {
+										'account_number': '123456'
+									}
+								}
 							}
 						}
-					}
-				}
-			).get_result()
-		except ApiException as ex:
-			if ex.message=="Invalid Session":
-				return JsonResponse(ex.message, safe=False)
-			return JsonResponse("Error "+str(ex.code)+"-"+ex.message, safe=False)
+					).get_result()
+				except ApiException as ex:
+					if ex.message=="Invalid Session":
+						return JsonResponse(ex.message, safe=False)
+					return JsonResponse("Error "+str(ex.code)+"-"+ex.message, safe=False)
+			else:
+				return JsonResponse("Sorry, The integer you entered does not correspond to any of the suggestion I mentioned.", safe=False)
+		except ValueError:
+			return JsonResponse("Sorry, but I only accept integer responses :(", safe=False)
+
 
 	asst_response=(json.dumps(response, indent=2))
 	print(asst_response)
